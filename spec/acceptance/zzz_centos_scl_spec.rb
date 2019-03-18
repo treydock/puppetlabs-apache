@@ -18,6 +18,7 @@ describe 'CentOS with SCL enabled', if: (fact('operatingsystem') == 'CentOS' && 
         mpm_module => 'prefork',
       }
       class { 'apache::mod::php': }
+      class { 'apache::mod::authnz_ldap': }
       apache::vhost { 'sclphp.example.com':
         port    => '80',
         docroot => '/opt/rh/httpd24/root/var/www/php',
@@ -38,6 +39,10 @@ describe 'CentOS with SCL enabled', if: (fact('operatingsystem') == 'CentOS' && 
     describe service('httpd24-httpd') do
       it { is_expected.to be_enabled }
       it { is_expected.to be_running }
+    end
+
+    describe package('httpd24-mod_ldap') do
+      it { is_expected.to be_installed }
     end
 
     it 'answers to sclphp.example.com' do
